@@ -12,7 +12,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall   -O3")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -march=native")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -march=native")
 
-# Check C++11 or C++0x support
+# Check C++14 or C++11 support
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++14" COMPILER_SUPPORTS_CXX14)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
@@ -40,6 +40,9 @@ MESSAGE(${OpenCV_VERSION})
 
 find_package(Eigen3 3.1.0 REQUIRED)
 find_package(Pangolin REQUIRED)
+
+find_package(fastcdr REQUIRED)
+find_package(fastrtps REQUIRED)
 find_package(realsense2)
 
 include_directories(
@@ -116,11 +119,11 @@ include/Settings.h)
 add_subdirectory(Thirdparty/g2o)
 
 target_link_libraries(${PROJECT_NAME}
-${OpenCV_LIBS}
-${EIGEN3_LIBS}
-${Pangolin_LIBRARIES}
-${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
-${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
+PUBLIC ${OpenCV_LIBS}
+PUBLIC ${EIGEN3_LIBS}
+PUBLIC ${Pangolin_LIBRARIES}
+PUBLIC ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
+PUBLIC ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
 -lboost_serialization
 -lcrypto
 )
@@ -131,7 +134,7 @@ if(realsense2_FOUND)
     ${realsense_INCLUDE_DIR}
     )
     target_link_libraries(${PROJECT_NAME}
-    ${realsense2_LIBRARY}
+    PUBLIC ${realsense2_LIBRARY}
     )
 endif()
 
